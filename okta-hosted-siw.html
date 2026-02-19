@@ -67,19 +67,22 @@
             var finalScriptUrl = baseUrl + scriptFilename;
 
             function initializeDependentCode(status) {
-                console.log("External script is ready. Executing dependent logic...");
+                console.log("2. External script is ready. Executing dependent logic...");
 
                 if (config.features && config.features.rememberMe === true) {
                     config.features.rememberMe = false;
+                    console.log("3. Set : config.features.rememberMe = false;");
                 }
 
                 if(status === "Success") {
                     if (typeof initConfig === 'function') {
                         initConfig(config);
+                        console.log("4. Invoked : initConfig(config);");
                     }
 
                     if (typeof loadConfig === 'function') {
                         loadConfig();
+                        console.log("5. Invoked : loadConfig();");
                     }
                 }
 
@@ -89,7 +92,7 @@
                     { el: '#okta-login-container' },
                     OktaUtil.completeLogin,
                     function(error) {
-                        console.log("OktaSignIn Render Error:", error.message, error);
+                        console.log("6. OktaSignIn Render Error:", error.message, error);
                     }
                 );
 
@@ -97,15 +100,18 @@
                     oktaSignIn.on('afterError', function(context, error) {
                         if (typeof afterError === 'function') {
                             afterError(context, error);
+                            console.log("7. Invoked : afterError(context, error);");
                         }
                     });
 
                     oktaSignIn.on("afterRender", function(context) {
                         if (typeof load_default === 'function') {
                             load_default(context);
+                            console.log("8. Invoked : load_default(context);");
                         }
                         if (typeof afterRender === 'function') {
                             afterRender(context);
+                            console.log("9. Invoked : afterRender(context);");
                         }
                     });
                 }
@@ -116,12 +122,12 @@
           scriptElement.src = finalScriptUrl;
 
           scriptElement.onload = function() {
-              console.log("Successfully loaded dynamic script: " + scriptFilename);
+              console.log("1.1. Successfully loaded dynamic script: " + scriptFilename);
               initializeDependentCode("Success");
           };
 
           scriptElement.onerror = function() {
-              console.error("Failed to load script: " + finalScriptUrl + ". Falling back to widget load.");
+              console.error("1.2.  Failed to load script: " + finalScriptUrl + ". Falling back to widget load.");
               // Proceeding to initialize Okta so the user isn't locked out if the CDN fails
               initializeDependentCode("Failure");
           };

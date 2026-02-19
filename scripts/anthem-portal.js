@@ -28,22 +28,6 @@ function initConfig(config) {
   };
 }
 
-function afterError(context, error) {
-  if (
-    context.controller === "mfa-verify-password" &&
-    context.formName === "challenge-authenticator" &&
-    context.authenticatorKey === "okta_password" &&
-    context.methodType === "password"
-  ) {
-    if (error.errorSummary === "Unable to sign in") {
-      if (appLabel === "CarelonRX Portal") {
-        injectCustomErrorContent();
-        injectInfoContent();
-      }
-    }
-  }
-}
-
 function afterRender(context) {
   el_Back = document.querySelector("[data-se=back]");
   if (el_Back) {
@@ -58,53 +42,4 @@ function afterRender(context) {
       window.location.href = "http://localhost:5000/";
     };
   }
-}
-
-const customHtmlContent = `
-                <div style="background-color : #fdf0e6;margin-top: 10px; padding: 10px; border-top: 1px solid #ccc; font-size: 0.9rem; color: #444;">
-                    <p><span><p><div class="errorlist"><p tabindex="0" class="errorlist"><strong>Sorry, we can't complete your login. Here are a few reasons why:</strong></p><ul class="errorlist"><li tabindex="0" align="left"> If youâ€™re an Anthem or Wellpoint member, your pharmacy benefits arenâ€™t available on the CarelonRx website. Please log in to your health plan's website to view them.</li><li tabindex="0" align="left"> Incorrect Username and Password. Please try again or <a class="highlightBlue" href="forgot-username">reset your Username or Password.</a> Note that your account will be locked after more than six incorrect attempts.</li><li tabindex="0" align="left"> You're not signed up to use our site. <a class="highlightBlue" href="register">Register Now.</a></li><li tabindex="0" align="left"> Online access isn't enabled for your plan.</li></ul><div><strong tabindex="0">If none of these reasons apply to you, our website could be experiencing technical difficulties. Please try again later.</strong><div tabindex="0">If you continue to have trouble logging in and believe it's because of a technical issue, please contact our Technical support team at <a class="highlightBlue line" href="tel:1-844-430-0335" data-analytics="loginTechSupportPhoneNumber">1-844-430-0335</a> (TTY/TD 711), Monday - Friday, 8 a.m. to 8 p.m. ET.</div></div></div></p><!----><!----></span><!----></p>
-                </div>
-                `;
-
-const customInfoContent = `
-                <div class="login-right-pane"><div class="border-thick-line"></div><p tabindex="0" class="anthem_redirection_register_title"> Are You a Member of One of These Health Plans?</p><div tabindex="0" class="redirection_subheading"> To access your pharmacy benefits, please visit your health planâ€™s website to log in. Once there, bookmark your planâ€™s site for future pharmacy needs.</div><div class="brand_section"><div class="redirection_logo"><img src="https://www.carelonrx.com/assets/images/ABCBS.png" class="logo_ABC"></div><div class="redirection-anthem-section"><p tabindex="0" class="redirection_anthem_text">If you have an <strong>Anthem Blue Cross</strong> and <strong> Blue Shield </strong> plan, please visit their website to log in.</p><a data-analytics="memberAnthemBCBSContinueButton" href="https://www.anthem.com/account-login/"><button class="anthem_redirection_button">CONTINUE</button></a></div></div><div class="brand_section"><div class="redirection_logo"><img src="https://www.carelonrx.com/assets/images/ABC.png" class="logo_ABC"></div><div class="redirection-anthem-section"><p tabindex="0" class="redirection_anthem_text">If you have an <strong>Anthem Blue Cross</strong> plan, please visit their website to log in.</p><a data-analytics="memberAnthemBCContinueButton" href="https://www.anthem.com/ca/account-login/"><button class="anthem_redirection_button">CONTINUE</button></a></div></div><div class="brand_section"><div class="redirection_logo"><img src="https://www.carelonrx.com/assets/images/Logo_Wellpoint_RGB_100pct.png" class="logo_ABC"></div><div class="redirection-anthem-section"><p tabindex="0" class="redirection_anthem_text">If you have a <strong>Wellpoint</strong> plan, please visit their website to register to log in</p><a data-analytics="memberAnthemBCContinueButton" href="https://member.wellpoint.com/public/login"><button class="anthem_redirection_button">CONTINUE</button></a></div></div></div>
-                `;
-
-function injectCustomErrorContent() {
-  const widget_div = document.getElementById("okta-login-container");
-  const error1_div = document.getElementById("error1_div");
-  if (!error1_div) {
-    const customDiv = document.createElement("div");
-    customDiv.id = "error1_div";
-    customDiv.innerHTML = customHtmlContent;
-    widget_div.appendChild(customDiv);
-  }
-}
-
-function injectInfoContent() {
-  const info_div = document.getElementById("info-container");
-  const error2_div = document.getElementById("error2_div");
-  if (!error2_div) {
-    const customDiv = document.createElement("div");
-    customDiv.id = "error2_div";
-    customDiv.innerHTML = customInfoContent;
-    info_div.appendChild(customDiv);
-  }
-}
-
-function getCookie(name) {
-  const nameEQ = name + "=";
-  const ca = document.cookie.split(";");
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    // Trim leading spaces from the cookie string
-    while (c.charAt(0) === " ") {
-      c = c.substring(1, c.length);
-    }
-    // If the cookie string starts with the name we're looking for, return its value
-    if (c.indexOf(nameEQ) === 0) {
-      return decodeURIComponent(c.substring(nameEQ.length, c.length));
-    }
-  }
-  return null; // Return null if the cookie is not found
 }
