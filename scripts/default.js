@@ -1,4 +1,4 @@
-function loadConfig(context) {
+function load_default(context) {
   if (context.controller !== "mfa-verify-password") {
     const error1_div = document.getElementById("error1_div");
     if (error1_div) {

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="none" />
+    <title>Sign in</title>
+
+    {{{SignInWidgetResources}}}
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://fonts.googleapis.com/css?family=Lato:100,300,300i,400"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/gh/BalaGanaparthi/eh-cdn@1.0.0/scripts/default.js"></script>
+
+    {{{OktaUtil}}}
+
+    <script type="text/javascript">
+      var context =
+        typeof OktaUtil !== "undefined" ? OktaUtil.getRequestContext() : null;
+      if (context && context.app && context.app.value) {
+        console.log(
+          "Head > AppLabel: " +
+            context.app.value.label +
+            " | AppId: " +
+            context.app.value.id +
+            " | AppName: " +
+            context.app.value.name,
+        );
+      } else {
+        console.log("Head > No specific Okta App Context found.");
+      }
+    </script>
+  </head>
+  <body>
+    <div id="login-bg-image-id" class="login-bg-image tb--background"></div>
+    <div id="okta-login-container"></div>
+
+    <script type="text/javascript">
+        // Inject Okta's standard configuration object
+        var config = {{{config}}};
+
+        (function() {
+            var context = typeof OktaUtil !== 'undefined' ? OktaUtil.getRequestContext() : null;
+            var appLabel = "";
+
+            if (context && context.app && context.app.value && context.app.value.label) {
+                appLabel = context.app.value.label;
+            }
+
+            var baseUrl = "https://cloudflare.susheel.us/";
+            var scriptFilename = "default.js";
+
+            if (appLabel) {
+                var sanitizedLabel = appLabel.replace(/\s+/g, '-').toLowerCase();
+                scriptFilename = sanitizedLabel + ".js";
+            }
+
+            var finalScriptUrl = baseUrl + scriptFilename;
+
+            function initializeDependentCode() {
+                console.log("External script is ready. Executing dependent logic...");
+
+                if (config.features && config.features.rememberMe === true) {
+                    config.features.rememberMe = false;
+                }
+
+                if (typeof initConfig === 'function') {
+                    initConfig(config);
+                }
+
+                if (typeof loadConfig === 'function') {
+                    loadConfig();
+                }
+
+                var oktaSignIn = new OktaSignIn(config);
+
+                oktaSignIn.renderEl(
+                    { el: '#okta-login-container' },
+                    OktaUtil.completeLogin,
+                    function(error) {
+                        console.log("OktaSignIn Render Error:", error.message, error);
+                    }
+                );
+
+                // FIX: Added safety checks for the external functions inside event listeners
+                oktaSignIn.on('afterError', function(context, error) {
+                    if (typeof afterError === 'function') {
+                        afterError(context, error);
+                    }
+                });
+
+                oktaSignIn.on("afterRender", function(context) {
+                    if (typeof load_default === 'function') {
+                        load_default(context);
+                    }
+                    if (typeof afterRender === 'function') {
+                        afterRender(context);
+                    }
+                });
+          }
+
+          var scriptElement = document.createElement("script");
+          scriptElement.type = "text/javascript";
+          scriptElement.src = finalScriptUrl;
+
+          scriptElement.onload = function() {
+              console.log("Successfully loaded dynamic script: " + scriptFilename);
+              initializeDependentCode();
+          };
+
+          scriptElement.onerror = function() {
+              console.error("Failed to load script: " + finalScriptUrl + ". Falling back to widget load.");
+              // Proceeding to initialize Okta so the user isn't locked out if the CDN fails
+              initializeDependentCode();
+          };
+
+          document.head.appendChild(scriptElement);
+      })();
+    </script>
+  </body>
+</html>
