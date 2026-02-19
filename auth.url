@@ -1,1 +1,7 @@
+Following are the URLs that you can check if the rendering is as expected (I have copied the JS content from your CDN and hosted for the rendering)
+
+Carelon :
+https://ehlogin.authstar.org/oauth2/v1/authorize?client_id=0oav6cszidSKk7h0u1d7&code_challenge=AphwCK6xkqv8N9WmiuF5yOlxI_ab64ch3loFtquTnvg&code_challenge_method=S256&nonce=CBYyQ0aYZcKd47kjSRt2d3E0hs4gdEaMFcrArJEnwhb3baZhMEHGzpEC3Y2n7wJJ&redirect_uri=http://localhost:8080/authorization-code/callback&response_type=code&state=Ay6RVOWNxEzOda75GQdc4YpgnK6Rgf7E76S5YTVdIofDi3fRTjzCSIJfYRB6h665&scope=openid%20profile%20email
+
+Anthem :
 https://ehlogin.authstar.org/oauth2/v1/authorize?client_id=0oav6ctu9wmzzQ5Bx1d7&code_challenge=AphwCK6xkqv8N9WmiuF5yOlxI_ab64ch3loFtquTnvg&code_challenge_method=S256&nonce=CBYyQ0aYZcKd47kjSRt2d3E0hs4gdEaMFcrArJEnwhb3baZhMEHGzpEC3Y2n7wJJ&redirect_uri=http://localhost:8080/authorization-code/callback&response_type=code&state=Ay6RVOWNxEzOda75GQdc4YpgnK6Rgf7E76S5YTVdIofDi3fRTjzCSIJfYRB6h665&scope=openid%20profile%20email
